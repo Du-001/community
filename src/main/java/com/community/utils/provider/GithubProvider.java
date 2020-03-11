@@ -1,11 +1,9 @@
-package com.community.provider;
+package com.community.utils.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.community.entity.dto.AccessTokenDTO;
 import com.community.entity.dto.GitHubUser;
-import com.community.utils.OkHttp;
 import okhttp3.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
