@@ -44,7 +44,7 @@ public class GithubProvider {
             GitHubUser gitHubUser =JSON.parseObject(string,GitHubUser.class);
             return gitHubUser;
         }catch (IOException e){
-
+            System.out.println("获取用户信息失败");
         }
         return null;
     }
