@@ -1,5 +1,7 @@
 package com.community.config;
 
+import com.community.utils.JwtTokenUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -14,13 +16,15 @@ import org.springframework.web.servlet.config.annotation.*;
 @Configuration
 @EnableWebMvc
 public class WebConfig implements WebMvcConfigurer {
+    @Autowired
+    private JwtInterceptor jwtInterceptor;
     /**
      * 添加拦截器
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //拦截路径可自行配置多个 可用 ，分隔开
-        registry.addInterceptor(new JwtInterceptor()).addPathPatterns("/**");
+        registry.addInterceptor(jwtInterceptor).addPathPatterns("/**");
     }
 
     /**

@@ -45,7 +45,6 @@ public class AuthorizeController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest request,
                            HttpServletResponse response) {
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setClient_id(clientId);
@@ -61,19 +60,31 @@ public class AuthorizeController {
             return "redirect:/";
         }
         User user = iUserService.getOne(new QueryWrapper<User>().eq("account_id", gitHubUser.getId()));
+        String token = UUID.randomUUID().toString();
         if (user == null) {
             user = new User();
             user.setAccountId(String.valueOf(gitHubUser.getId()));
             user.setAvatarUrl(gitHubUser.getAvatarUrl());
             user.setName(gitHubUser.getName());
+            user.setToken(token);
             iUserService.save(user);
+        }else {
+            User newUser = new User();
+            newUser.setId(user.getId());
+            newUser.setToken(token);
+            iUserService.updateById(newUser);
         }
-        String token = jwtTokenUtil.createToken(user.getId(), user.getName(), "user");
-        System.out.println("token:"+token);
-        request.getSession().setAttribute("user",user);
+       // String token = jwtTokenUtil.createToken(user.getId(), user.getName(), "user");
         System.out.println("登录成功");
         response.addCookie(new Cookie("token",token));
-//        return Result.success(token);
+        return "redirect:/";
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,HttpServletResponse response){
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
         return "redirect:/";
     }
 }

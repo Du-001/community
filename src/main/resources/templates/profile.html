@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>首页</title>
+    <title th:text="${sectionName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/community.css">
@@ -11,10 +11,10 @@
 <body>
 
 <div th:insert="~{navigation :: nav}"></div>
-<div class="container-fluid main">
+<div class="container-fluid main profile">
     <div class="row">
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
-            <h2><span class="glyphicon glyphicon-list" aria-hidden="true"></span>发现</h2>
+            <h2><span th:text="${sectionName}"></span></h2>
             <hr>
             <div class="media" th:each="question:${questions}">
                 <div class="media-left">
@@ -23,10 +23,7 @@
                     </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading">
-                        <a th:href="@{'/question/'+${question.id}}" th:text="${question.title}"></a>
-                    </h4>
-                    <span th:text="${question.description}"></span>
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
                     <span class="text-des">
                         <span th:text="${question.commentCount}">个回复</span>
                         · <span th:text="${question.viewCount}">浏览数</span>
@@ -36,31 +33,16 @@
             </div>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
-            <h3>热门话题</h3>
+            <div class="list-group section">
+                <a href="/profile/questions" th:class="${section=='questions'}?'list-group-item active':'list-group-item'">我的问题</a>
+                <a href="/profile/replies" th:class="${section=='replies'}?'list-group-item active':'list-group-item'">
+                    <span class="badge">14</span>
+                    最新回复</a>
+            </div>
         </div>
     </div>
 </div>
 <script src="/static/jQuery/jquery-3.4.1.min.js"></script>
 <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js" type="application/javascript"></script>
-<script type="application/javascript">
-    window.onload = function () {
-        localStorage.setItem("Authorization", getCookie("token"));
-    }
-
-    function login() {
-        var url = "https://github.com/login/oauth/authorize?client_id=Iv1.5a3cd7aae6b520e7&redirect_uri=http://localhost:8887/callback&scope=user&state=1";
-        location.href = url;
-    }
-
-    function getCookie(name) {
-        //可以搜索RegExp和match进行学习
-        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-        if (arr = document.cookie.match(reg)) {
-            return unescape(arr[2]);
-        } else {
-            return null;
-        }
-    }
-</script>
 </body>
 </html>

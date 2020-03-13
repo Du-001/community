@@ -2,6 +2,9 @@ package com.community.service;
 
 import com.community.entity.domain.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.community.entity.vo.QuestionVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IQuestionService extends IService<Question> {
 
+    List<QuestionVO> questionVOList();
+
+    List<QuestionVO> questionVOListByUserId(Long id);
+
+    QuestionVO getQuestionVOById(Long id);
 }
