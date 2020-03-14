@@ -15,18 +15,26 @@
         <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
             <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
             <hr>
-            <form action="">
+            <!--/*@thymesVar id="questionDTO" type="com.community.entity.dto.QuestionDTO"*/-->
+            <form action="#" th:action="@{/publish}" th:object="${questionDTO}" method="post">
+                <input class="hidden" th:field="*{id}">
                 <div class="form-group">
                     <label for="title">问题标题（简明扼要）：</label>
-                    <input type="text" class="form-control" id="title" name="title" placeholder="问题标题.....">
+                    <span style="color: red"  th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Name Error</span>
+                    <input type="text" class="form-control" id="title" name="title" th:field="*{title}"
+                           placeholder="问题标题....." >
                 </div>
                 <div class="form-group">
                     <label for="description">问题补充（必填，参照右边提示）：</label>
-                    <textarea class="form-control" id="description" name="description" cols="30" rows="10"></textarea>
+                    <span style="color: red"  th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</span>
+                    <textarea class="form-control" id="description" name="description" th:field="*{description}"
+                              cols="30" rows="10"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签：</label>
-                    <input type="text" class="form-control" id="tag" name="tag" placeholder="输入标签，以，隔开">
+                    <span style="color: red" th:if="${#fields.hasErrors('tag')}" th:errors="*{tag}">Name Error</span>
+                    <input type="text" class="form-control" id="tag" name="tag" th:field="*{tag}"
+                           placeholder="输入标签，以，隔开">
                 </div>
                 <div class="form-group">
                     <div class="row">
@@ -36,7 +44,7 @@
                 </div>
             </form>
         </div>
-        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" >
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>问题发起指南</h3>
             · 问题标题：用精简的语言描述您发布的问题，不超过25个子<br>
             · 问题补充：详细描述您的问题内容，并确保问题清晰直观，提供一些相关的资料<br>
