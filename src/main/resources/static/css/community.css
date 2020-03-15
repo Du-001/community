@@ -17,6 +17,14 @@ body {
     height: 38px;
 }
 
+.comment {
+    margin: 10px 0;
+}
+
+.media-heading {
+    padding-top: 10px;
+}
+
 .text-des {
     font-size: 12px;
     font-weight: normal;

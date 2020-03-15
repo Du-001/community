@@ -10,9 +10,7 @@ import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CodeGenerator {
 
@@ -64,13 +62,16 @@ public class CodeGenerator {
         mpg.setPackageInfo(pc);
 
         // 自定义配置
-        InjectionConfig cfg = new InjectionConfig() {
+        InjectionConfig cfg =  new InjectionConfig() {
             @Override
             public void initMap() {
-                // to do nothing
+                Map<String, Object> map = new HashMap<String, Object>();
+                //自定义配置，在模版中cfg.superColums 获取
+                // TODO 这里解决子类会生成父类属性的问题，在模版里会用到该配置
+                map.put("superColums", this.getConfig().getStrategyConfig().getSuperEntityColumns());
+                this.setMap(map);
             }
         };
-
         // 如果模板引擎是 freemarker
         String templatePath = "/templates/mapper.xml.ftl";
         // 如果模板引擎是 velocity
