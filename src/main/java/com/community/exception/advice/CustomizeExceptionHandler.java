@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class CustomizeExceptionHandler extends ResponseEntityExceptionHandler {
 
+    //未处理"application/json"格式的异常
     @ExceptionHandler(Exception.class)
     ModelAndView handleControllerException(Throwable ex, Model model) {
         if (ex instanceof CustomizeException) {

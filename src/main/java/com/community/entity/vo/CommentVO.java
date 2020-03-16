@@ -10,27 +10,27 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QuestionVO extends BaseEntity {
+public class CommentVO extends BaseEntity {
 
     /**
-     * 标题
+     * 父类id
      */
-    private String title;
+    private Long parentId;
 
     /**
-     * 描述
+     * 父类类型
      */
-    private String description;
+    private Integer type;
 
     /**
-     * 评论数
+     * 回复内容
      */
-    private Integer commentCount;
+    private String content;
 
     /**
-     * 阅读数
+     * 评论人
      */
-    private Integer viewCount;
+    private Long commentator;
 
     /**
      * 点赞数
@@ -38,18 +38,8 @@ public class QuestionVO extends BaseEntity {
     private Integer likeCount;
 
     /**
-     * 标签
-     */
-    private String tag;
-
-    /**
      * 发起人
      */
     private User user;
-
-    /**
-     * 问题评论
-     */
-    private List<CommentVO> comments;
 
 }

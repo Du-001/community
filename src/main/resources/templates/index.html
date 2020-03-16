@@ -30,7 +30,7 @@
                     <span class="text-des">
                         <span th:text="${question.commentCount}"></span>个回复
                         · <span th:text="${question.viewCount}"></span>浏览数
-                        · <span  th:text="${#temporals.format(question.updateTime, 'dd-MM-yyyy HH:mm')}"></span>
+                        · <span th:text="${#temporals.format(question.updateTime, 'dd-MM-yyyy HH:mm')}"></span>
                     </span>
                 </div>
             </div>
@@ -44,7 +44,12 @@
 <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js" type="application/javascript"></script>
 <script type="application/javascript">
     window.onload = function () {
-        localStorage.setItem("Authorization", getCookie("token"));
+        debugger;//程序执行到此处会进入debug
+        // localStorage.setItem("Authorization", getCookie("token"));
+        if (window.localStorage.getItem("closable") == "true") {
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
     }
 
     function login() {
