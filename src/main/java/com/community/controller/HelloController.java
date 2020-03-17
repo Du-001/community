@@ -1,6 +1,7 @@
 package com.community.controller;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.community.entity.vo.QuestionVO;
 import com.community.service.IQuestionService;
 import com.community.utils.JwtIgnore;
@@ -26,8 +27,10 @@ public class HelloController {
     }
     @JwtIgnore
     @GetMapping("/")
-    public String index(Model model){
-        List<QuestionVO> questions = iQuestionService.questionVOList();
+    public String index(Model model,
+                        @RequestParam(name = "page" , defaultValue = "1") Integer page,
+                        @RequestParam(name = "size" , defaultValue = "1") Integer size){
+        Page<QuestionVO> questions = iQuestionService.questionVOList(page,size);
         model.addAttribute("questions",questions);
         return "index";
     }

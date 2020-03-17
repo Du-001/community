@@ -40,6 +40,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     private QuestionMapper questionMapper;
 
     @Autowired
+    private CommentMapper commentMapper;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Override
@@ -56,6 +59,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             if (comment1 == null) {
                 return Result.error("评论不存在");
             }
+            commentMapper.addSubCommentCount(comment.getParentId());
 
         } else {
             Question question = questionMapper.selectById(comment.getParentId());

@@ -20,13 +20,14 @@
                 <input class="hidden" th:field="*{id}">
                 <div class="form-group">
                     <label for="title">问题标题（简明扼要）：</label>
-                    <span style="color: red"  th:if="${#fields.hasErrors('title')}" th:errors="*{title}">Name Error</span>
+                    <span style="color: red" th:if="${#fields.hasErrors('title')}"
+                          th:errors="*{title}">Name Error</span>
                     <input type="text" class="form-control" id="title" name="title" th:field="*{title}"
-                           placeholder="问题标题....." >
+                           placeholder="问题标题....." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label for="description">问题补充（必填，参照右边提示）：</label>
-                    <span style="color: red"  th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</span>
+                    <span style="color: red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</span>
                     <textarea class="form-control" id="description" name="description" th:field="*{description}"
                               cols="30" rows="10"></textarea>
                 </div>
@@ -34,7 +35,30 @@
                     <label for="tag">添加标签：</label>
                     <span style="color: red" th:if="${#fields.hasErrors('tag')}" th:errors="*{tag}">Name Error</span>
                     <input type="text" class="form-control" id="tag" name="tag" th:field="*{tag}"
-                           placeholder="输入标签，以，隔开">
+                           placeholder="点击选择标签" autocomplete="off" onclick="showSelectTag()">
+                    <span></span>
+                    <div id="select-tag" class="publish-tab-tag">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" th:each="tag,tagStat:${tags}"
+                                th:class="${tagStat.first?'active':''}">
+                                <a href="#home" th:href="${'#'+tag.name}" aria-controls="home" role="tab"
+                                   data-toggle="tab" th:text="${tag.name}"></a>
+                            </li>
+                        </ul>
+
+                        <!-- Tab panes -->
+                        <div class="tab-content">
+                            <div role="tabpanel" th:id="${tag.name}" th:each="tag,tagStat:${tags}"
+                                 th:class="${tagStat.first?'active tab-pane':'tab-pane'}">
+                                <span>
+                                    <span class="label label-info" th:each="t:${tag.tags}">
+                                        <span class="glyphicon glyphicon-tag" onclick="selectTag(this)"
+                                              th:data-tag="${t.name}" th:text="${' '+t.name}"></span>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="row">
@@ -54,5 +78,6 @@
 </div>
 <script src="/static/jQuery/jquery-3.4.1.min.js"></script>
 <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js" type="application/javascript"></script>
+<script src="/static/js/community.js" type="application/javascript"></script>
 </body>
 </html>

@@ -40,6 +40,12 @@ public class Comment extends BaseEntity {
     private Long commentator;
 
     /**
+     * 子评论数
+     */
+    private Integer commentCount;
+
+
+    /**
      * 点赞数
      */
     private Integer likeCount;

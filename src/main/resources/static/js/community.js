@@ -20,17 +20,42 @@ function collapseComment(e) {
         e.removeAttribute("data-collapse")
         e.classList.remove("active");
     } else {
-        $.getJSON("/comment/" + id, function (data) {
-            $("#comment-" + id);
-            let item = [];
-            $.each(data.data, function (key, val) {
-                item.push();
+        let subCommentContainer = $("#comment-" + id);
+        if (subCommentContainer.children().length == 1) {
+            $.getJSON("/comment/" + id, function (data) {
+                $.each(data.data.reverse(), function (index, comment) {
+                    let madiaLeft = $("<div/>", {
+                        "class": "media-left",
+                    }).append($("<img/>", {
+                        "class": "media-object img-rounded",
+                        "src": comment.user.avatarUrl
+                    }));
+
+                    let madiaBody = $("<div/>", {
+                        "class": "media-body",
+                    }).append($("<h5/>", {
+                        "class": "media-heading",
+                        "html": comment.user.name
+                    })).append($("<div/>", {
+                        "html": comment.content
+                    })).append($("<div/>", {
+                        "class": "menu"
+                    }).append($("<span/>", {
+                        "class": "pull-right",
+                        "html": moment(comment.createTime).format("YYYY-MM-DD HH:mm")
+                    })));
+
+                    let madia = $("<div/>", {
+                        "class": "media",
+                    }).append(madiaLeft).append(madiaBody);
+
+                    let div = $("<div/>", {
+                        "class": "col-lg-12 col-md-12 col-sm-12 col-xs-12 comments",
+                    }).append(madia);
+                    subCommentContainer.prepend(div);
+                });
             });
-            $("<ul/>", {
-                "class": "my",
-                html: item.join("")
-            }).appendTo("body");
-        });
+        }
         $("#comment-" + id).addClass("in");
         e.setAttribute("data-collapse", "in");
         e.classList.add("active");
@@ -74,4 +99,20 @@ function saveContent(targetId, type, content) {
         },
         dataType: "json"
     });
+}
+
+function showSelectTag() {
+    $("#select-tag").show();
+
+}
+
+function selectTag(val) {
+    let tags = $("#tag");
+    if (tags.val().indexOf(val)==-1){
+        if(tags.val()){
+            tags.val(tags+','+val);
+        }else {
+            tags.val(val);
+        }
+    }
 }

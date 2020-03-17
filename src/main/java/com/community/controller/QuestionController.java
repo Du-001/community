@@ -32,6 +32,7 @@ public class QuestionController {
         List<CommentVO> comments = iCommentService.getCommentVO(id, CommentTypeEnum.QUESTION.getType());
         question.setComments(comments);
         model.addAttribute("question", question);
+        model.addAttribute("ralatedQuestion", "");
         return "question";
     }
 }

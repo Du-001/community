@@ -2,6 +2,8 @@ package com.community.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.community.entity.domain.Question;
 import com.community.entity.dto.QuestionDTO;
 import com.community.entity.vo.QuestionVO;
@@ -20,7 +22,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author du
@@ -36,25 +38,28 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     private QuestionMapper questionMapper;
 
     @Override
-    public List<QuestionVO> questionVOList() {
-        List<QuestionVO> questionVOS = new ArrayList<>();
-        List<Question> questions = list();
-        for (Question question : questions){
+    public Page<QuestionVO> questionVOList(Integer page, Integer size) {
+        Page<QuestionVO> questionVOPage = new Page<>(page, size);
+        Page<Question> questionPage = questionMapper.selectPage(new Page<>(page, size), new QueryWrapper<Question>().orderByDesc("create_time"));
+        questionVOPage.setTotal(questionPage.getTotal());
+        questionVOPage.setRecords(new ArrayList<>());
+        for (Question question : questionPage.getRecords()) {
             QuestionVO questionVO = new QuestionVO();
             BeanUtils.copyProperties(question, questionVO);
             questionVO.setUser(iUserService.getById(question.getUserId()));
-            questionVOS.add(questionVO);
+            questionVOPage.getRecords().add(questionVO);
         }
-        return questionVOS;
+        return questionVOPage;
     }
 
     @Override
     public List<QuestionVO> questionVOListByUserId(Long id) {
         List<QuestionVO> questionVOS = new ArrayList<>();
-        List<Question> questions = list(new QueryWrapper<Question>().eq("user_id",id));
-        for (Question question : questions){
+        List<Question> questions = list(new QueryWrapper<Question>().eq("user_id", id));
+        for (Question question : questions) {
             QuestionVO questionVO = new QuestionVO();
             BeanUtils.copyProperties(question, questionVO);
+            questionVO.setUser(iUserService.getById(question.getUserId()));
             questionVOS.add(questionVO);
         }
         return questionVOS;
@@ -68,7 +73,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
-        BeanUtils.copyProperties(question,questionVO);
+        BeanUtils.copyProperties(question, questionVO);
         questionVO.setUser(iUserService.getById(question.getUserId()));
         return questionVO;
     }
@@ -77,7 +82,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     public void addViewCount(Question question) {
         Question question1 = new Question();
         question1.setId(question.getId());
-        question1.setViewCount(question.getViewCount()+1);
+        question1.setViewCount(question.getViewCount() + 1);
         updateById(question1);
     }
 
@@ -85,7 +90,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     public QuestionDTO getQuestionDTOById(Long questionId) {
         QuestionDTO questionDTO = new QuestionDTO();
         Question question = getById(questionId);
-        BeanUtils.copyProperties(question,questionDTO);
+        BeanUtils.copyProperties(question, questionDTO);
         return questionDTO;
     }
 }
