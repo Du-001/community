@@ -1,5 +1,6 @@
 package com.community.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.community.entity.domain.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -18,9 +19,6 @@ import java.util.List;
  */
 public interface IQuestionService extends IService<Question> {
 
-
-    List<QuestionVO> questionVOListByUserId(Long id);
-
     QuestionVO getQuestionVOById(Long id);
 
     void addViewCount(Question question);
@@ -28,4 +26,8 @@ public interface IQuestionService extends IService<Question> {
     QuestionDTO getQuestionDTOById(Long questionId);
 
     Page<QuestionVO> questionVOList(Integer page, Integer size);
+
+    List<Question> getRelatedQuestion(QuestionVO question);
+
+    IPage<QuestionVO> questionVOListByUserId(Long id, Integer page, Integer size);
 }

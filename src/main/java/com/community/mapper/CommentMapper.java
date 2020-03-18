@@ -15,6 +15,6 @@ import org.apache.ibatis.annotations.Update;
  */
 public interface CommentMapper extends BaseMapper<Comment> {
 
-    @Update("update comment set comment_count = comment_count + 1 where id = ${id}")
+    @Update("update comment set comment_count = comment_count + 1 where id = #{id}")
     void addSubCommentCount(@Param("id") Long id);
 }

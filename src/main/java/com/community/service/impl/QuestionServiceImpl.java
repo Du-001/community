@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.community.entity.domain.Question;
+import com.community.entity.domain.User;
 import com.community.entity.dto.QuestionDTO;
 import com.community.entity.vo.QuestionVO;
 import com.community.exception.CustomizeException;
@@ -13,6 +14,7 @@ import com.community.mapper.QuestionMapper;
 import com.community.service.IQuestionService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.community.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     @Override
     public Page<QuestionVO> questionVOList(Integer page, Integer size) {
         Page<QuestionVO> questionVOPage = new Page<>(page, size);
-        Page<Question> questionPage = questionMapper.selectPage(new Page<>(page, size), new QueryWrapper<Question>().orderByDesc("create_time"));
+        Page<Question> questionPage = page(new Page<>(page, size), new QueryWrapper<Question>().orderByDesc("create_time"));
         questionVOPage.setTotal(questionPage.getTotal());
         questionVOPage.setRecords(new ArrayList<>());
         for (Question question : questionPage.getRecords()) {
@@ -53,16 +55,29 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     }
 
     @Override
-    public List<QuestionVO> questionVOListByUserId(Long id) {
-        List<QuestionVO> questionVOS = new ArrayList<>();
-        List<Question> questions = list(new QueryWrapper<Question>().eq("user_id", id));
-        for (Question question : questions) {
+    public List<Question> getRelatedQuestion(QuestionVO question) {
+        String tag = question.getTag();
+        if(StringUtils.isEmpty(tag)){
+            return null;
+        }
+        String reg = StringUtils.replaceChars(tag,',','|');
+        return questionMapper.getRelatedQuestion(reg,question.getId());
+    }
+
+    @Override
+    public IPage<QuestionVO> questionVOListByUserId(Long id, Integer page, Integer size) {
+        Page<QuestionVO> questionVOPage = new Page<>(page, size);
+        Page<Question> questionPage = page(new Page<>(page, size), new QueryWrapper<Question>().eq("user_id", id).orderByDesc("create_time"));
+        questionVOPage.setTotal(questionPage.getTotal());
+        User user = iUserService.getById(id);
+        questionVOPage.setRecords(new ArrayList<>());
+        for (Question question : questionPage.getRecords()) {
             QuestionVO questionVO = new QuestionVO();
             BeanUtils.copyProperties(question, questionVO);
-            questionVO.setUser(iUserService.getById(question.getUserId()));
-            questionVOS.add(questionVO);
+            questionVO.setUser(user);
+            questionVOPage.getRecords().add(questionVO);
         }
-        return questionVOS;
+        return questionVOPage;
     }
 
     @Override

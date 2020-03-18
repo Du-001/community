@@ -1,7 +1,10 @@
 package com.community.entity.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.community.entity.BaseEntity;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -31,5 +34,10 @@ public class Tag extends BaseEntity {
      */
     private String name;
 
+    /**
+     * 子标签
+     */
+    @TableField(exist = false)
+    private List<Tag> subTags;
 
 }

@@ -106,13 +106,14 @@ function showSelectTag() {
 
 }
 
-function selectTag(val) {
+function selectTag(e) {
+    let commentId = e.getAttribute("data-tag");
     let tags = $("#tag");
-    if (tags.val().indexOf(val)==-1){
+    if (tags.val().indexOf(commentId)==-1){
         if(tags.val()){
-            tags.val(tags+','+val);
+            tags.val(tags.val()+','+commentId);
         }else {
-            tags.val(val);
+            tags.val(commentId);
         }
     }
 }

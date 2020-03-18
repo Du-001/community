@@ -30,9 +30,10 @@ public class QuestionController {
                            Model model) {
         QuestionVO question = iQuestionService.getQuestionVOById(id);
         List<CommentVO> comments = iCommentService.getCommentVO(id, CommentTypeEnum.QUESTION.getType());
+        List<Question> relatedQuestion = iQuestionService.getRelatedQuestion(question);
         question.setComments(comments);
         model.addAttribute("question", question);
-        model.addAttribute("ralatedQuestion", "");
+        model.addAttribute("relatedQuestion", relatedQuestion);
         return "question";
     }
 }

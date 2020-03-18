@@ -51,7 +51,7 @@
                             <div role="tabpanel" th:id="${tag.name}" th:each="tag,tagStat:${tags}"
                                  th:class="${tagStat.first?'active tab-pane':'tab-pane'}">
                                 <span>
-                                    <span class="label label-info" th:each="t:${tag.tags}">
+                                    <span class="label label-info" th:each="t:${tag.subTags}">
                                         <span class="glyphicon glyphicon-tag" onclick="selectTag(this)"
                                               th:data-tag="${t.name}" th:text="${' '+t.name}"></span>
                                     </span>

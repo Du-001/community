@@ -2,7 +2,6 @@ package com.community.service;
 
 import com.community.entity.domain.Tag;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.community.entity.vo.TagVO;
 
 import java.util.List;
 
@@ -15,5 +14,5 @@ import java.util.List;
  * @since 2020-03-17
  */
 public interface ITagService extends IService<Tag> {
-    List<TagVO> getTag();
+    List<Tag> getTag();
 }

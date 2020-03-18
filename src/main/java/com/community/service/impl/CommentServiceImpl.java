@@ -3,23 +3,24 @@ package com.community.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.community.entity.Result;
 import com.community.entity.domain.Comment;
+import com.community.entity.domain.Notification;
 import com.community.entity.domain.Question;
 import com.community.entity.domain.User;
 import com.community.entity.enums.CommentTypeEnum;
+import com.community.entity.enums.NotificationStatusEnum;
+import com.community.entity.enums.NotificationTypeEnum;
 import com.community.entity.vo.CommentVO;
 import com.community.mapper.CommentMapper;
+import com.community.mapper.NotificationMapper;
 import com.community.mapper.QuestionMapper;
 import com.community.mapper.UserMapper;
 import com.community.service.ICommentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.community.service.IQuestionService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,9 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private NotificationMapper notificationMapper;
+
     @Override
     @Transactional
     public Result saveComment(Comment comment) {
@@ -60,16 +64,26 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
                 return Result.error("评论不存在");
             }
             commentMapper.addSubCommentCount(comment.getParentId());
-
+            createNotification(comment,NotificationTypeEnum.REPLY_COMMENT.getType(),comment1.getCommentator(),comment1.getParentId());
         } else {
             Question question = questionMapper.selectById(comment.getParentId());
             if (question == null) {
                 return Result.error("评论的问题未找到");
             }
             questionMapper.addCommentCount(question.getId());
+            createNotification(comment,NotificationTypeEnum.REPLY_QUESTION.getType(),question.getUserId(),question.getId());
         }
         save(comment);
         return Result.success();
+    }
+    private void createNotification(Comment comment,int type,Long receiver,Long questionId){
+        Notification notification = new Notification();
+        notification.setType(type);
+        notification.setOuterId(questionId);
+        notification.setNotifier(comment.getCommentator());
+        notification.setReceiver(receiver);
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notificationMapper.insert(notification);
     }
 
     @Override
