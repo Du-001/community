@@ -38,24 +38,17 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
-                        <li th:class="${(questions.current - 1) / 5==0?'disabled':''}">
-                            <a th:href="@{${(questions.current - 1) / 5==0?'#':'/?page='+ (((((questions.current - 1) / 5 * 5 + 1 )-1)/5 - 1) * 5 + 1)}}">
+                        <li th:class="${questions.previous == null ? 'disabled' : '' }">
+                            <a th:href="@{${questions.previous == null ?'#':'/?page='+ questions.previous}}">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li th:class="${k==questions.current?'active':''}" th:each="k:${#numbers.sequence(((questions.current - 1) / 5 * 5 + 1 ),
-                        ((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?
-                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :
-                        ((questions.current - 1) / 5 + 1) * 5 ))}">
+                        <li th:class="${k==questions.current?'active':''}" th:each="k:${#numbers.sequence(questions.start,questions.end)}">
                             <a th:href="@{${k!=questions.current?'/?page='+ k:'#'}}"
                                th:text="${k}"></a>
                         </li>
-                        <li th:class="${((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?
-                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :
-                        ((questions.current - 1) / 5 + 1) * 5 )+1>(questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1)?'disabled':''}">
-                            <a th:href="@{${((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?
-                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :
-                        ((questions.current - 1) / 5 + 1) * 5 )+1>(questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1)?'#':'/?page='+(((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :                        ((questions.current - 1) / 5 + 1) * 5 )+1)}}">
+                        <li th:class="${questions.next == null ?'disabled':''}">
+                            <a th:href="@{${questions.next == null ?'#':'/?page='+questions.next}}">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

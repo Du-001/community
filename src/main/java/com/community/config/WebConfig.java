@@ -33,6 +33,8 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        //加入上传文件的磁盘映射路径
+        registry.addResourceHandler("/file/**").addResourceLocations("file:E:\\community\\");
         //如下配置则能可以访问src/main/resources/static下面的文件
         registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }

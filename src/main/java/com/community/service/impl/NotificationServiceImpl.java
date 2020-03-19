@@ -7,8 +7,10 @@ import com.community.entity.domain.Comment;
 import com.community.entity.domain.Notification;
 import com.community.entity.domain.Question;
 import com.community.entity.domain.User;
+import com.community.entity.enums.NotificationStatusEnum;
 import com.community.entity.enums.NotificationTypeEnum;
 import com.community.entity.vo.NotificationVO;
+import com.community.entity.vo.PageVO;
 import com.community.entity.vo.QuestionVO;
 import com.community.mapper.NotificationMapper;
 import com.community.service.ICommentService;
@@ -48,10 +50,8 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
 
     @Override
     public IPage<NotificationVO> getNotificationVO(Long id, Integer page, Integer size) {
-        Page<NotificationVO> notificationVOPage = new Page<>(page, size);
-        Page<Notification> notificationPage = page(new Page<>(page, size), new QueryWrapper<Notification>().eq("notifier", id).orderByDesc("create_time"));
-        notificationVOPage.setTotal(notificationPage.getTotal());
-        notificationVOPage.setRecords(new ArrayList<>());
+        Page<Notification> notificationPage = page(new Page<>(page, size), new QueryWrapper<Notification>().eq("receiver", id).orderByDesc("create_time"));
+        PageVO<NotificationVO> notificationVOPage = new PageVO<>(page, size, notificationPage.getTotal());
 
         Set<Long> notifiers = notificationPage.getRecords().stream().map(notification -> notification.getNotifier()).collect(Collectors.toSet());
         if (notifiers.size() > 0) {
@@ -72,6 +72,12 @@ public class NotificationServiceImpl extends ServiceImpl<NotificationMapper, Not
                 notificationVOPage.getRecords().add(notificationVO);
             }
         }
+        notificationVOPage.init();
         return notificationVOPage;
+    }
+
+    @Override
+    public Integer getUnReadCount(Long id) {
+        return count(new QueryWrapper<Notification>().eq("receiver", id).eq("status", NotificationStatusEnum.UNREAD.getStatus()));
     }
 }

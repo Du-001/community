@@ -1,12 +1,12 @@
 package com.community.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.community.entity.domain.Question;
 import com.community.entity.domain.User;
 import com.community.entity.dto.QuestionDTO;
+import com.community.entity.vo.PageVO;
 import com.community.entity.vo.QuestionVO;
 import com.community.exception.CustomizeException;
 import com.community.exception.emuns.CustomizeErrorCode;
@@ -41,34 +41,32 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 
     @Override
     public Page<QuestionVO> questionVOList(Integer page, Integer size) {
-        Page<QuestionVO> questionVOPage = new Page<>(page, size);
         Page<Question> questionPage = page(new Page<>(page, size), new QueryWrapper<Question>().orderByDesc("create_time"));
-        questionVOPage.setTotal(questionPage.getTotal());
-        questionVOPage.setRecords(new ArrayList<>());
+        PageVO<QuestionVO> questionVOPage = new PageVO<>(page, size, questionPage.getTotal());
         for (Question question : questionPage.getRecords()) {
             QuestionVO questionVO = new QuestionVO();
             BeanUtils.copyProperties(question, questionVO);
             questionVO.setUser(iUserService.getById(question.getUserId()));
             questionVOPage.getRecords().add(questionVO);
         }
+        questionVOPage.init();
         return questionVOPage;
     }
 
     @Override
     public List<Question> getRelatedQuestion(QuestionVO question) {
         String tag = question.getTag();
-        if(StringUtils.isEmpty(tag)){
+        if (StringUtils.isEmpty(tag)) {
             return null;
         }
-        String reg = StringUtils.replaceChars(tag,',','|');
-        return questionMapper.getRelatedQuestion(reg,question.getId());
+        String reg = StringUtils.replaceChars(tag, ',', '|');
+        return questionMapper.getRelatedQuestion(reg, question.getId());
     }
 
     @Override
-    public IPage<QuestionVO> questionVOListByUserId(Long id, Integer page, Integer size) {
-        Page<QuestionVO> questionVOPage = new Page<>(page, size);
+    public Page<QuestionVO> questionVOListByUserId(Long id, Integer page, Integer size) {
         Page<Question> questionPage = page(new Page<>(page, size), new QueryWrapper<Question>().eq("user_id", id).orderByDesc("create_time"));
-        questionVOPage.setTotal(questionPage.getTotal());
+        PageVO<QuestionVO> questionVOPage = new PageVO<>(page, size, questionPage.getTotal());
         User user = iUserService.getById(id);
         questionVOPage.setRecords(new ArrayList<>());
         for (Question question : questionPage.getRecords()) {
@@ -77,6 +75,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             questionVO.setUser(user);
             questionVOPage.getRecords().add(questionVO);
         }
+        questionVOPage.init();
         return questionVOPage;
     }
 
@@ -84,7 +83,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     public QuestionVO getQuestionVOById(Long id) {
         QuestionVO questionVO = new QuestionVO();
         Question question = getById(id);
-        questionMapper.addViewCount(id);
+        questionMapper.incViewCount(id);
         if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
         }
@@ -93,13 +92,6 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         return questionVO;
     }
 
-    @Override
-    public void addViewCount(Question question) {
-        Question question1 = new Question();
-        question1.setId(question.getId());
-        question1.setViewCount(question.getViewCount() + 1);
-        updateById(question1);
-    }
 
     @Override
     public QuestionDTO getQuestionDTOById(Long questionId) {

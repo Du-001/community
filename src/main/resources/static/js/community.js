@@ -88,12 +88,12 @@ function saveContent(targetId, type, content) {
             } else {
                 if (response.code === 1002) {
                     //未登录
-                    if (confirm(response.message) === true) {
+                    if (confirm(response.msg) === true) {
                         window.open("https://github.com/login/oauth/authorize?client_id=Iv1.5a3cd7aae6b520e7&redirect_uri=http://localhost:8887/callback&scope=user&state=1")
                         window.localStorage.setItem("closable", true);
                     }
                 } else {
-                    alert(response.message);
+                    alert(response.msg);
                 }
             }
         },
@@ -108,12 +108,13 @@ function showSelectTag() {
 
 function selectTag(e) {
     let commentId = e.getAttribute("data-tag");
-    let tags = $("#tag");
-    if (tags.val().indexOf(commentId)==-1){
-        if(tags.val()){
-            tags.val(tags.val()+','+commentId);
+    let tags = $("#tag").val();
+debugger;
+    if ($.inArray(commentId,tags.split(",")) < 0){
+        if(tags){
+            $("#tag").val(tags+','+commentId);
         }else {
-            tags.val(commentId);
+            $("#tag").val(commentId);
         }
     }
 }

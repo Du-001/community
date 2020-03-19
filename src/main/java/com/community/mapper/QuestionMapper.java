@@ -19,10 +19,10 @@ import java.util.List;
 public interface QuestionMapper extends BaseMapper<Question> {
 
     @Update("update question set view_count = view_count + 1 where id = #{id}")
-    void addViewCount(@Param("id") Long id);
+    void incViewCount(@Param("id") Long id);
 
     @Update("update question set comment_count = comment_count + 1 where id = #{id}")
-    void addCommentCount(@Param("id") Long id);
+    void incCommentCount(@Param("id") Long id);
 
     @Select("SELECT * FROM question WHERE tag REGEXP #{reg} and id !=#{id}")
     List<Question> getRelatedQuestion(@Param("reg") String reg,@Param("id")Long id);

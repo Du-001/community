@@ -6,6 +6,7 @@ import com.community.entity.domain.Question;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.community.entity.dto.QuestionDTO;
 import com.community.entity.vo.QuestionVO;
+import sun.rmi.runtime.Log;
 
 import java.util.List;
 
@@ -21,13 +22,11 @@ public interface IQuestionService extends IService<Question> {
 
     QuestionVO getQuestionVOById(Long id);
 
-    void addViewCount(Question question);
-
     QuestionDTO getQuestionDTOById(Long questionId);
 
     Page<QuestionVO> questionVOList(Integer page, Integer size);
 
     List<Question> getRelatedQuestion(QuestionVO question);
 
-    IPage<QuestionVO> questionVOListByUserId(Long id, Integer page, Integer size);
+    Page<QuestionVO> questionVOListByUserId(Long id, Integer page, Integer size);
 }

@@ -42,13 +42,7 @@ public class HelloController {
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
                         @RequestParam(name = "size", defaultValue = "10") Integer size) {
         Page<QuestionVO> questions = iQuestionService.questionVOList(page, size);
-        User user = (User) request.getSession().getAttribute("user");
-        Integer unReadCount = null;
-        if (user != null) {
-            unReadCount = iNotificationService.count(new QueryWrapper<Notification>().eq("notifier", user.getId()).eq("status", NotificationStatusEnum.READ.getStatus()));
-        }
         model.addAttribute("questions", questions);
-        model.addAttribute("unReadCount", unReadCount);
         return "index";
     }
 }

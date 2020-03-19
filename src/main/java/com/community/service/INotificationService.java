@@ -16,4 +16,6 @@ import com.community.entity.vo.NotificationVO;
 public interface INotificationService extends IService<Notification> {
 
     IPage<NotificationVO> getNotificationVO(Long id, Integer page, Integer size);
+
+    Integer getUnReadCount(Long id);
 }

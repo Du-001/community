@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -63,14 +64,14 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             if (comment1 == null) {
                 return Result.error("评论不存在");
             }
-            commentMapper.addSubCommentCount(comment.getParentId());
+            commentMapper.incSubCommentCount(comment.getParentId());
             createNotification(comment,NotificationTypeEnum.REPLY_COMMENT.getType(),comment1.getCommentator(),comment1.getParentId());
         } else {
             Question question = questionMapper.selectById(comment.getParentId());
             if (question == null) {
                 return Result.error("评论的问题未找到");
             }
-            questionMapper.addCommentCount(question.getId());
+            questionMapper.incCommentCount(question.getId());
             createNotification(comment,NotificationTypeEnum.REPLY_QUESTION.getType(),question.getUserId(),question.getId());
         }
         save(comment);
@@ -82,7 +83,11 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         notification.setOuterId(questionId);
         notification.setNotifier(comment.getCommentator());
         notification.setReceiver(receiver);
-        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        if(Objects.equals(receiver,comment.getCommentator())){
+            notification.setStatus(NotificationStatusEnum.READ.getStatus());
+        }else {
+            notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        }
         notificationMapper.insert(notification);
     }
 

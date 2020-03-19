@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/community.css">
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/static/markdown/css/editormd.css"/>
 </head>
 <body>
 <div th:insert="~{navigation :: nav}"></div>
@@ -28,8 +29,10 @@
                 <div class="form-group">
                     <label for="description">问题补充（必填，参照右边提示）：</label>
                     <span style="color: red" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">Name Error</span>
-                    <textarea class="form-control" id="description" name="description" th:field="*{description}"
-                              cols="30" rows="10"></textarea>
+                    <div id="question-editor">
+                        <textarea class="form-control" id="description" name="description" th:field="*{description}"
+                                  cols="30" rows="10" style="display:none;"></textarea>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="tag">添加标签：</label>
@@ -62,7 +65,6 @@
                 </div>
                 <div class="form-group">
                     <div class="row">
-                        <div class="alert alert-danger col-lg-1" th:if="${error != null}" th:text="${error}"></div>
                         <button class="btn btn-success btn-publish col-lg-1" type="submit">发布</button>
                     </div>
                 </div>
@@ -78,6 +80,64 @@
 </div>
 <script src="/static/jQuery/jquery-3.4.1.min.js"></script>
 <script src="/static/bootstrap-3.3.7-dist/js/bootstrap.min.js" type="application/javascript"></script>
+<script src="/static/markdown/editormd.min.js"></script>
 <script src="/static/js/community.js" type="application/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        editormd("question-editor", {
+            width: "100%",
+            height: "350px",
+            path: "/static/markdown/lib/",
+            delay: 0,
+            watch: false,
+            placeholder: "请输入问题描述",
+            imageUpload: true,
+            imageFormats: ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL: "/file/upload",
+            toolbarIcons: function () {
+                return ["undo"
+                    , "redo"
+                    , "bold"
+                    , "del"
+                    , "italic"
+                    , "quote"
+                    , "ucwords"
+                    , "uppercase"
+                    , "lowercase"
+                    , "|"
+                    , "h1"
+                    , "h2"
+                    , "h3"
+                    , "h4"
+                    , "h5"
+                    , "h6"
+                    , "|"
+                    , "list-ul"
+                    , "list-ol"
+                    , "hr"
+                    , "|"
+                    , "link"
+                    , "reference-link"
+                    , "image"
+                    , "code"
+                    , "preformatted-text"
+                    , "code-block"
+                    , "table"
+                    , "datetime"
+                    , "emoji"
+                    , "html-entities"
+                    , "pagebreak"
+                    , "|"
+                    , "goto-line"
+                    , "watch"
+                    , "preview"
+                    , "clear"
+                    , "search"
+                    , "|"
+                    , "help"];
+            },
+        });
+    });
+</script>
 </body>
 </html>

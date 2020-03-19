@@ -45,14 +45,12 @@ public class ProfileController {
             model.addAttribute("section", "questions");
             model.addAttribute("sectionName", "我的提问");
             IPage<QuestionVO> questionVOIPage = iQuestionService.questionVOListByUserId(user.getId(), page, size);
-            model.addAttribute("questions", questionVOIPage);
+            model.addAttribute("page", questionVOIPage);
         } else if ("replies".equals(action)) {
             IPage<NotificationVO> notificationVOIPage = iNotificationService.getNotificationVO(user.getId(),page,size);
-            int unReadCount = iNotificationService.count(new QueryWrapper<Notification>().eq("notifier",user.getId()).eq("status", NotificationStatusEnum.READ.getStatus()));
             model.addAttribute("section", "replies");
             model.addAttribute("sectionName", "最新回复");
-            model.addAttribute("unReadCount", unReadCount);
-            model.addAttribute("questions", notificationVOIPage);
+            model.addAttribute("page", notificationVOIPage);
         }
         return "profile";
     }

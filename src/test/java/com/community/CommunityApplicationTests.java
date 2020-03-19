@@ -3,6 +3,7 @@ package com.community;
 import com.community.entity.domain.Question;
 import com.community.entity.domain.User;
 import com.community.mapper.QuestionMapper;
+import com.community.service.INotificationService;
 import com.community.service.IUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.Locale;
 class CommunityApplicationTests {
 
     @Autowired
-    QuestionMapper questionMapper;
+    INotificationService iNotificationService;
     @Test
     void contextLoads() {
 //        User u = new User();
@@ -24,7 +25,8 @@ class CommunityApplicationTests {
 //        u.setAccountId("45454");
 //        iUserService.save(u);
 //        System.out.println(u);
-
+        Integer unReadCount = iNotificationService.getUnReadCount(12380568755939L);
+        System.out.println(unReadCount);
     }
 
 }

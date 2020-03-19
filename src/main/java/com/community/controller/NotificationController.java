@@ -15,6 +15,7 @@ import com.community.exception.CustomizeException;
 import com.community.exception.emuns.CustomizeErrorCode;
 import com.community.service.INotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -33,7 +35,7 @@ import java.util.List;
  * @author du
  * @since 2020-03-18
  */
-@RestController
+@Controller
 public class NotificationController {
 
     @Autowired
@@ -41,7 +43,6 @@ public class NotificationController {
 
     @GetMapping("/notification/{id}")
     public String notification(@PathVariable(name = "id") Long id,
-                               Model model,
                                HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
@@ -49,9 +50,9 @@ public class NotificationController {
         }
         Notification notification = iNotificationService.getById(id);
         if(notification==null){
-            throw new CustomizeException("通知未找到!");
+            throw new CustomizeException("消息不见了!");
         }
-        if (notification.getReceiver() != user.getId()) {
+        if (!Objects.equals(notification.getReceiver(),user.getId())) {
             throw new CustomizeException(CustomizeErrorCode.RECEIVER_ERROR);
         }
         Notification newNotify = new Notification();

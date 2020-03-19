@@ -2,6 +2,7 @@ package com.community.config;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.community.entity.domain.User;
+import com.community.service.INotificationService;
 import com.community.service.IUserService;
 import com.community.utils.JwtIgnore;
 import com.community.utils.JwtTokenUtil;
@@ -36,6 +37,9 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
     private IUserService iUserService;
+
+    @Autowired
+    private INotificationService iNotificationService;
 
     /**
      * header名称
@@ -90,6 +94,8 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     User user = iUserService.getOne(new QueryWrapper<User>().eq("token", token));
                     if (user != null) {
                         request.getSession().setAttribute("user", user);
+                        Integer unReadCount = iNotificationService.getUnReadCount(user.getId());
+                        request.getSession().setAttribute("unReadCount",unReadCount);
                     }
                     break;
                 }

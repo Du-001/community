@@ -32,11 +32,6 @@ public class Notification extends BaseEntity {
     /**
      * 问题id
      */
-    private Long questionId;
-
-    /**
-     * 提醒内容id
-     */
     private Long outerId;
 
     /**

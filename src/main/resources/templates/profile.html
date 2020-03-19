@@ -17,7 +17,7 @@
             <h2><span th:text="${sectionName}"></span></h2>
             <hr>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section=='questions'}">
-                <div class="media" th:each="question:${questions.records}">
+                <div class="media" th:each="question:${page.records}">
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-rounded" th:src="${question.user.avatarUrl}" alt="">
@@ -39,9 +39,10 @@
                 </div>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" th:if="${section=='replies'}">
-                <div class="media" th:each="notification:${questions.records}">
+                <div class="media" th:each="notification:${page.records}">
                     <div class="media-body">
                         <p class="media-heading">
+                            <span th:if="${notification.status==0}" style="color: #ff325c">未读</span>
                             <span th:text="${notification.notifier.name+' '+notification.type+' '}"></span>
                             <a th:href="@{'/notification/'+${notification.id}}"
                                th:text="${notification.outerTitle}"></a>
@@ -54,24 +55,17 @@
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <nav aria-label="Page navigation">
                     <ul class="pagination">
-                        <li th:class="${(questions.current - 1) / 5==0?'disabled':''}">
-                            <a th:href="@{${(questions.current - 1) / 5==0?'#':'/profile/'+(section=='questions'?'questions':'replies')+'/?page='+ (((((questions.current - 1) / 5 * 5 + 1 )-1)/5 - 1) * 5 + 1)}}">
+                        <li th:class="${page.previous == null ? 'disabled' : '' }">
+                            <a th:href="@{${page.previous == null ?'#':'/?page='+ page.previous}}">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li th:class="${k==questions.current?'active':''}" th:each="k:${#numbers.sequence(((questions.current - 1) / 5 * 5 + 1 ),
-                        ((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?
-                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :
-                        ((questions.current - 1) / 5 + 1) * 5 ))}">
-                            <a th:href="@{${k!=questions.current?'/profile/'+(section=='questions'?'questions':'replies')+'/?page='+ k:'#'}}"
+                        <li th:class="${k==page.current?'active':''}" th:each="k:${#numbers.sequence(page.start,page.end)}">
+                            <a th:href="@{${k!=page.current?'/?page='+ k:'#'}}"
                                th:text="${k}"></a>
                         </li>
-                        <li th:class="${((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?
-                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :
-                        ((questions.current - 1) / 5 + 1) * 5 )+1>(questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1)?'disabled':''}">
-                            <a th:href="@{${((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?
-                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :
-                        ((questions.current - 1) / 5 + 1) * 5 )+1>(questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1)?'#':'/profile/'+(section=='questions'?'questions':'replies')+'/?page='+(((((questions.current - 1) / 5 + 1) * 5 > (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1))?                        (questions.total%questions.size==0?questions.total/questions.size:questions.total/questions.size+1) :                        ((questions.current - 1) / 5 + 1) * 5 )+1)}}">
+                        <li th:class="${page.next == null ?'disabled':''}">
+                            <a th:href="@{${page.next == null ?'#':'/?page='+page.next}}">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
@@ -84,7 +78,7 @@
                 <a href="/profile/questions"
                    th:class="${section=='questions'}?'list-group-item active':'list-group-item'">我的问题</a>
                 <a href="/profile/replies" th:class="${section=='replies'}?'list-group-item active':'list-group-item'">
-                    <span class="badge" th:text="${unReadCount}"></span>
+                    <span class="badge" th:text="${session.unReadCount}"></span>
                     最新回复</a>
             </div>
         </div>
