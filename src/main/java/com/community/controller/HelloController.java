@@ -25,9 +25,6 @@ public class HelloController {
     @Autowired
     private IQuestionService iQuestionService;
 
-    @Autowired
-    private INotificationService iNotificationService;
-
     @JwtIgnore
     @GetMapping("/hello")
     public String hello(@RequestParam(name = "name") String name, Model model) {
@@ -38,11 +35,12 @@ public class HelloController {
     @JwtIgnore
     @GetMapping("/")
     public String index(Model model,
-                        HttpServletRequest request,
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
-                        @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        Page<QuestionVO> questions = iQuestionService.questionVOList(page, size);
+                        @RequestParam(name = "size", defaultValue = "10") Integer size,
+                        @RequestParam(name = "search", required = false) String search) {
+        Page<QuestionVO> questions = iQuestionService.questionVOList(search, page, size);
         model.addAttribute("questions", questions);
+        model.addAttribute("search", search);
         return "index";
     }
 }

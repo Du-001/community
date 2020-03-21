@@ -39,3 +39,10 @@ jwt:
   tokenPrefix: Bearer
   secret: community
   expiration: 900
+logging:
+  file:
+    path: logs
+    max-history: 30
+    max-size: 100MB
+  level:
+    com.community.mapper: DEBUG

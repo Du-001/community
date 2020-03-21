@@ -40,8 +40,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     private QuestionMapper questionMapper;
 
     @Override
-    public Page<QuestionVO> questionVOList(Integer page, Integer size) {
-        Page<Question> questionPage = page(new Page<>(page, size), new QueryWrapper<Question>().orderByDesc("create_time"));
+    public Page<QuestionVO> questionVOList(String search, Integer page, Integer size) {
+        Page<Question> questionPage = page(new Page<>(page, size), new QueryWrapper<Question>().like(StringUtils.isNotBlank(search), "title",search).orderByDesc("create_time"));
         PageVO<QuestionVO> questionVOPage = new PageVO<>(page, size, questionPage.getTotal());
         for (Question question : questionPage.getRecords()) {
             QuestionVO questionVO = new QuestionVO();

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author du
@@ -24,7 +24,7 @@ public interface IQuestionService extends IService<Question> {
 
     QuestionDTO getQuestionDTOById(Long questionId);
 
-    Page<QuestionVO> questionVOList(Integer page, Integer size);
+    Page<QuestionVO> questionVOList(String search, Integer page, Integer size);
 
     List<Question> getRelatedQuestion(QuestionVO question);
 
